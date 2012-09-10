@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+
+<html>
+
+  <head>
+    <title>Big Old Test</title>
+    <link rel="stylesheet" href="http://meyerweb.com/eric/tools/css/reset/reset.css" title="" type="text.css" />
+    <script type="text/javascript" charset="utf-8">
+      (function() {
+       /*
+        * tip cleaned from http://www.html5rocks.com/en/tutorials/webperformance/basics/
+        * where they mention that if you need to access loadEventEnd you need to make sure
+        * you wait for the dom to be full loaded by the browser before trying to access
+        * the property.
+        *
+        */
+
+       window.onload = function() {
+          setTimeout(function() {
+            PerformanceBar.loadMetrics();
+          }, 0);
+       }
+
+       window.addEventListener("keypress", function(event) {
+          if(event.keyCode == "80") {
+            el = document.getElementById("teamPerformanceBar");
+            if(el.className === "hidden") {
+              el.className = "visible";
+            } else {
+              el.className = "hidden"
+            }
+
+          }
+         });
+       }).call();
+
+        var PerformanceBar = {
+          refresh: function() {
+            document.location.reload(false); 
+            el.className = "visible";
+            PerformanceBar.loadMetrics();
+           },
+          loadMetrics: function() {
+              var el = document.getElementById("pageLoad");
+              var perfTiming = performance.timing;
+              var networkLatency = perfTiming.responseEnd - perfTiming.fetchStart;
+              var renderTime = perfTiming.loadEventEnd - perfTiming.responseEnd;
+              var pageLoadTime = perfTiming.loadEventEnd - perfTiming.navigationStart;
+
+              var total = networkLatency + renderTime + pageLoadTime;
+              console.log(total);
+              el.innerHTML = "<span>" + networkLatency + " " + renderTime + " " + pageLoadTime + "=" + total  +"</span>";
+           }
+        }
+     </script>
+
+     <style type="text/css" media="all">
+
+       nav.hidden {
+        -webkit-transition: all 1s ease-in-out;
+        margin-top: -40px;
+        width: 100%;
+        top: 0;
+        height: 35px;
+        background: black;
+        background-image: url(carbon_fibre.png);
+       }
+
+       nav.visible {
+        -webkit-transition: all 1s ease-in-out;
+        background: black;
+        background-image: url(carbon_fibre.png);
+        top: 0;
+        height: 35px;
+        width: 100%;
+        color: #dfdffd;
+       }
+
+       nav #currentBranch {
+         position: relative;
+         display: block;
+         margin: 4px 10px 2px 20px;
+         background: rgb(40,40,40);
+         color: rgb(100,100,100);
+         -webkit-border-radius: 4px;
+         padding: 3px;
+         width: 150px;
+         text-align: center;
+          float: left;
+          box-shadow: inset 1px 1px 1px 1px black;
+          background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#000), to(#2F2727));
+          font-family: "Monaco";
+          font-size: 13px;
+       }
+
+       nav #pageLoad {
+          display: block;
+          margin: 4px 10px 2px 20px;
+       }
+
+     </style>
+   </head>
+
+   <body >
+     <nav id="teamPerformanceBar" class="visible">
+       <span id="currentBranch">metrics-start</span>
+       <span id="pageLoad"></span>
+     </nav>
+
+     <div id="content">
+     <p> pressing "shift-p" will hide the info bar</p>
+     </div>
+   </body>
+
+ </html>
